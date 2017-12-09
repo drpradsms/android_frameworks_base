@@ -127,4 +127,8 @@
   <!-- Whether device needs to wait for Qualcomm MPCTL service to start
        before setting power profiles on boot. -->
   <java-symbol type="bool" name="config_waitForMpctlOnBoot" />
+
+    <!-- Toast text and bg colors -->
+    <java-symbol type="color" name="toast_bg_color" />
+    <java-symbol type="color" name="toast_text_color" />
 </resources>

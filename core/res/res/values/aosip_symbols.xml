@@ -34,4 +34,8 @@
     <color name="sender_text_color">@android:color/black</color>
     <!-- Notification app name tint -->
     <java-symbol type="bool" name="config_allowNotificationAppNameTextTinting" />
+
+    <!-- Auto fill -->
+    <java-symbol type="color" name="autofill_save_title_color" />
+    <java-symbol type="color" name="autofill_autofill_save_custom_subtitle_color" />
 </resources>

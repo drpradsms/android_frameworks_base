@@ -4571,6 +4571,13 @@ public final class Settings {
         public static final String ACCENT_PICKER = "accent_picker";
 
         /**
+         * Whether to use blackaf themes in place of dark
+         *
+         * @hide
+         */
+        public static final String USE_BLACKAF_THEME = "use_blackaf_theme";
+
+        /**
          * @hide
          */
         public static final String OMNI_QS_LAYOUT_ROWS = "qs_layout_rows";

@@ -32,5 +32,6 @@
 
     <!-- Notification sender text color -->
     <color name="sender_text_color">@android:color/black</color>
-
+    <!-- Notification app name tint -->
+    <java-symbol type="bool" name="config_allowNotificationAppNameTextTinting" />
 </resources>

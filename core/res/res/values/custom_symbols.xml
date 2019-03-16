@@ -54,4 +54,8 @@
 
     <!-- Whether device has oled display -->
     <java-symbol type="bool" name="config_hasOledDisplay" />
+
+    <!-- Whether device has a physical display cutout -->
+    <java-symbol type="bool" name="config_physicalDisplayCutout" />
+
 </resources>

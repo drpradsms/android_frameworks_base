@@ -26,12 +26,6 @@
     <!-- Fastscroller -->
     <java-symbol type="color" name="fastscroller_text_color" />
 
-    <!-- Notification icon/text dynamic tint -->
-    <color name="notification_text_default_color">@android:color/notification_default_color</color>
-    <color name="notification_icon_default_color">@color/notification_default_color</color>
-
-    <!-- Notification sender text color -->
-    <color name="sender_text_color">@android:color/black</color>
     <!-- Notification app name tint -->
     <java-symbol type="bool" name="config_allowNotificationAppNameTextTinting" />
 

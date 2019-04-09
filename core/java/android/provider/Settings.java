@@ -4774,8 +4774,18 @@ public final class Settings {
          */
         public static final String SCREENSHOT_SOUND = "screenshot_sound";
         /** @hide */
+<<<<<<< HEAD
         private static final Validator SCREENSHOT_SOUND_VALIDATOR =
                 BOOLEAN_VALIDATOR;
+
+        /**
+         * The enabled mode for the theme tile.
+         * - ACCENT
+         * - STYLE
+         * @hide
+         */
+        public static final String THEME_TILE_ENABLED_MODE = "theme_tile_enabled_mode";
+
         /**
          * Wheter to play notification sound and vibration if screen is ON
          * 0 - never

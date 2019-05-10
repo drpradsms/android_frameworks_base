@@ -86,4 +86,6 @@
     <color name="quick_settings_theme_tile_user_six">#FFC27B</color>
     <color name="quick_settings_theme_tile_user_seven">#FFCC00</color>
     <color name="floating_action_button_icon_color_white_accent">#6d6d6d</color>
+    <!-- QS -->
+    <color name="qs_status_bar_background">#ff000000</color>
 </resources>

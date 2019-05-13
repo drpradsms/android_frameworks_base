@@ -7,4 +7,8 @@
     <bool name="config_useDarkBgNotificationIconTinting">false</bool>
     <bool name="config_useDarkBgNotificationIconTextTinting">false</bool>
 
+
+    <!-- Whether device has oled display -->
+    <bool name="config_hasOledDisplay">false</bool>
+
 </resources>

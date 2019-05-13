@@ -75,6 +75,7 @@ import android.content.pm.UserInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -348,7 +349,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     private static final boolean DARK_THEME_IN_NIGHT_MODE = true;
 
     /** Whether to switch the device into night mode in battery saver. (Disabled.) */
-    private static final boolean NIGHT_MODE_IN_BATTERY_SAVER = false;
+    private boolean mNightModeInBatterySaver;
 
     /**
      * Never let the alpha become zero for surfaces that draw with SRC - otherwise the RenderNode
@@ -660,6 +661,9 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private boolean mIsOnPowerSaveMode;
 
+    // Dark theme style
+    private boolean mUseBlackTheme;
+
     @Override
     public void start() {
         mGroupManager = Dependency.get(NotificationGroupManager.class);
@@ -755,10 +759,13 @@ public class StatusBar extends SystemUI implements DemoMode,
             // If the system process isn't there we're doomed anyway.
         }
 
-        createAndAddWindows();
+        mNightModeInBatterySaver = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_hasOledDisplay);
 
         mNosSettingsObserver.observe();
         mNosSettingsObserver.update();
+
+        createAndAddWindows();
 
         // Make sure we always have the most current wallpaper info.
         IntentFilter wallpaperChangedFilter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
@@ -1002,7 +1009,8 @@ public class StatusBar extends SystemUI implements DemoMode,
                 if (mDozeServiceHost != null) {
                     mDozeServiceHost.firePowerSaveChanged(isPowerSave);
                 }
-                if (NIGHT_MODE_IN_BATTERY_SAVER) {
+
+                if (mNightModeInBatterySaver) {
                     updateTheme(true, false);
                 }
             }
@@ -2225,10 +2233,22 @@ public class StatusBar extends SystemUI implements DemoMode,
         try {
             themeInfo = mOverlayManager.getOverlayInfo("com.android.system.theme.dark",
                     mLockscreenUserManager.getCurrentUserId());
+            if (themeInfo != null && themeInfo.isEnabled()){
+                return true;
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        return themeInfo != null && themeInfo.isEnabled();
+        try {
+            themeInfo = mOverlayManager.getOverlayInfo("com.android.system.theme.black",
+                    mLockscreenUserManager.getCurrentUserId());
+            if (themeInfo != null && themeInfo.isEnabled()){
+                return true;
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private void swapWhiteBlackAccent() {
@@ -4118,7 +4138,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         // The system wallpaper defines if QS should be light or dark.
         final WallpaperColors systemColors = mColorExtractor.getWallpaperColors(WallpaperManager.FLAG_SYSTEM);
         boolean darkThemeNeeded = systemColors != null && (systemColors.getColorHints() & WallpaperColors.HINT_SUPPORTS_DARK_THEME) != 0;
-        if ((fromPowerSaveCallback || !darkThemeNeeded) && DARK_THEME_IN_NIGHT_MODE && mIsOnPowerSaveMode){
+        if ((fromPowerSaveCallback || !darkThemeNeeded) && mNightModeInBatterySaver && mIsOnPowerSaveMode){
             darkThemeNeeded = true;
         }
         final boolean useDarkTheme = darkThemeNeeded;
@@ -4127,9 +4147,13 @@ public class StatusBar extends SystemUI implements DemoMode,
                 umm.setNightMode(useDarkTheme ? UiModeManager.MODE_NIGHT_YES : UiModeManager.MODE_NIGHT_NO);
                 try {
                     mOverlayManager.setEnabled("com.android.system.theme.dark",
-                            useDarkTheme, mLockscreenUserManager.getCurrentUserId());
+                            useDarkTheme && !mUseBlackTheme, mLockscreenUserManager.getCurrentUserId());
                     mOverlayManager.setEnabled("com.android.systemui.custom.theme.dark",
-                            useDarkTheme, mLockscreenUserManager.getCurrentUserId());
+                            useDarkTheme && !mUseBlackTheme, mLockscreenUserManager.getCurrentUserId());
+                    mOverlayManager.setEnabled("com.android.system.theme.black",
+                            useDarkTheme && mUseBlackTheme, mLockscreenUserManager.getCurrentUserId());
+                    mOverlayManager.setEnabled("com.android.systemui.custom.theme.black",
+                            useDarkTheme && mUseBlackTheme, mLockscreenUserManager.getCurrentUserId());
                     mOverlayManager.setEnabled("com.android.settings.theme.dark",
                             useDarkTheme, mLockscreenUserManager.getCurrentUserId());
                     mOverlayManager.setEnabled("com.android.settings.intelligence.theme.dark",
@@ -4174,6 +4198,13 @@ public class StatusBar extends SystemUI implements DemoMode,
             // Make sure we have the correct navbar/statusbar colors.
             mStatusBarWindowManager.setKeyguardDark(useDarkText);
         }
+    }
+    
+    private void updateDarkThemeStyle(){
+        boolean useBlackByDefault = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_hasOledDisplay);
+        mUseBlackTheme = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.THEME_DARK_STYLE, useBlackByDefault ? 1 : 0, UserHandle.USER_CURRENT) == 1;
     }
 
     private void updateDozingState() {
@@ -4855,11 +4886,19 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.DOUBLE_TAP_SLEEP_GESTURE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.THEME_DARK_STYLE),
+                    false, this, UserHandle.USER_ALL);
         }
          @Override
         public void onChange(boolean selfChange, Uri uri) {
-            update();
+            super.onChange(selfChange, uri);
+            if (uri.equals(Settings.System.getUriFor(Settings.System.THEME_DARK_STYLE))) {
+                updateDarkThemeStyle();
+                updateTheme(false, true);
+            }
         }
+
          public void update() {
             setHeadsUpStoplist();
             setHeadsUpBlacklist();
@@ -4867,6 +4906,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             setLockscreenMediaMetadata();
             setLockscreenDoubleTapToSleep();
             setStatusDoubleTapToSleep();
+            updateDarkThemeStyle();
         }
     }
 

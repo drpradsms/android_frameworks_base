@@ -234,6 +234,10 @@
     <uses-permission android:name="org.pixelexperience.weather.client.READ_WEATHER" />
 
 
+    <!-- DayNight mode -->
+    <uses-permission android:name="android.permission.MODIFY_DAY_NIGHT_MODE" />
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES"/>
+
     <!-- QS Tiles -->
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />

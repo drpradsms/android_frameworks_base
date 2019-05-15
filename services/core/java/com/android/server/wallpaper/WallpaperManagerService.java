@@ -131,6 +131,8 @@ public class WallpaperManagerService extends IWallpaperManager.Stub
     static final boolean DEBUG = false;
     static final boolean DEBUG_LIVE = DEBUG || true;
 
+    private boolean mIsNightModeEnabled = false;
+
     public static class Lifecycle extends SystemService {
         private IWallpaperManagerService mService;
 
@@ -357,6 +359,10 @@ public class WallpaperManagerService extends IWallpaperManager.Stub
                     Settings.Secure.getUriFor(Settings.Secure.THEME_MODE),
                     false,
                     this);
+            context.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.THEME_AUTOMATIC_TIME_IS_NIGHT),
+                    false,
+                    this);
         }
 
         public void stopObserving(Context context) {
@@ -375,13 +381,13 @@ public class WallpaperManagerService extends IWallpaperManager.Stub
      * Then theme mode changing to dark theme mode, however, theme should not update since
      * theme was dark already.
      */
-    private boolean needUpdateLocked(WallpaperColors colors, int themeMode) {
+    private boolean needUpdateLocked(WallpaperColors colors, int themeMode, boolean isNightModeEnabled) {
         if (colors == null) {
             colors = new WallpaperColors(Color.valueOf(Color.WHITE), null, null, 0);
             //return false;
         }
 
-        if (themeMode == mThemeMode) {
+        if (themeMode == mThemeMode && isNightModeEnabled == mIsNightModeEnabled) {
             return false;
         }
 
@@ -411,6 +417,7 @@ public class WallpaperManagerService extends IWallpaperManager.Stub
                 return false;
         }
         mThemeMode = themeMode;
+        mIsNightModeEnabled = isNightModeEnabled;
         return result;
     }
 
@@ -421,11 +428,15 @@ public class WallpaperManagerService extends IWallpaperManager.Stub
             int updatedThemeMode = mPowerManager.isPowerSaveMode() ? Settings.Secure.THEME_MODE_DARK :
                     Settings.Secure.getInt(mContext.getContentResolver(), Settings.Secure.THEME_MODE, Settings.Secure.THEME_MODE_WALLPAPER);
 
+            boolean isNightModeEnabled = Settings.System.getInt(
+                    mContext.getContentResolver(),
+                    Settings.System.THEME_AUTOMATIC_TIME_IS_NIGHT, 0) != 0;
+
             if (DEBUG) {
                 Slog.v(TAG, "onThemeSettingsChanged, mode = " + updatedThemeMode);
             }
 
-            if (!needUpdateLocked(wallpaper.primaryColors, updatedThemeMode)) {
+            if (!needUpdateLocked(wallpaper.primaryColors, updatedThemeMode, isNightModeEnabled)) {
                 return;
             }
         }

@@ -7,5 +7,7 @@
 
     <!-- Custom fonts -->
     <java-symbol type="style" name="TextAppearanceTitle" />
+    <java-symbol type="style" name="TextAppearancePreference" />
+    <java-symbol type="style" name="TextAppearancePreferenceCategory" />
 
 </resources>

@@ -754,6 +754,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             // If the system process isn't there we're doomed anyway.
         }
 
+        initCoreOverlays();
+
         createAndAddWindows();
 
         mNosSettingsObserver.observe();
@@ -1163,6 +1165,16 @@ public class StatusBar extends SystemUI implements DemoMode,
         ThreadedRenderer.overrideProperty("ambientRatio", String.valueOf(1.5f));
 
         mFlashlightController = Dependency.get(FlashlightController.class);
+    }
+
+    private void initCoreOverlays(){
+        boolean aodAvailable = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_dozeAlwaysOnDisplayAvailable);
+        try{
+            mOverlayManager.setEnabled("com.google.android.setupwizard.overlay",
+                !aodAvailable, mLockscreenUserManager.getCurrentUserId());
+        } catch (RemoteException ignored) {
+        }
     }
 
     protected void createNavigationBar() {

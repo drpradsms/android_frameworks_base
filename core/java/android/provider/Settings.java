@@ -4564,13 +4564,6 @@ public final class Settings {
                 BOOLEAN_VALIDATOR;
 
         /**
-         * Select various accents to go along with system themes
-         *
-         * @hide
-         */
-        public static final String ACCENT_PICKER = "accent_picker";
-
-        /**
          * Whether to use blackaf themes in place of dark
          *
          * @hide

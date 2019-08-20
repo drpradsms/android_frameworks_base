@@ -2225,9 +2225,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mSwipeToScreenshot = new SwipeToScreenshotListener(context, new SwipeToScreenshotListener.Callbacks() {
             @Override
             public void onSwipeThreeFinger() {
-                if (!mPocketLockShowing){
                     mHandler.post(mScreenshotRunnable);
-                }
             }
         });
 

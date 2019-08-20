@@ -4085,6 +4085,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     protected void updateTheme() {
         final boolean inflated = mStackScroller != null && mStatusBarWindowManager != null;
 
+        final UiModeManager umm = mContext.getSystemService(UiModeManager.class);
         // The system wallpaper defines if QS should be light or dark.
         WallpaperColors systemColors = mColorExtractor
                 .getWallpaperColors(WallpaperManager.FLAG_SYSTEM);
@@ -4106,6 +4107,10 @@ public class StatusBar extends SystemUI implements DemoMode,
                             useDarkTheme, mLockscreenUserManager.getCurrentUserId());
                 } catch (RemoteException e) {
                     Log.w(TAG, "Can't change theme", e);
+                }
+                if (umm != null){
+                    umm.setNightMode(useDarkTheme ?
+                        UiModeManager.MODE_NIGHT_YES : UiModeManager.MODE_NIGHT_NO);
                 }
             });
         }

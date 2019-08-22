@@ -4076,11 +4076,11 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private boolean themeNeedsRefresh(){
         if (mContext.getSharedPreferences("systemui_theming", 0).getString(
-                "build_fingerprint", "").equals(Build.AOSIP_FINGERPRINT)){
+                "build_fingerprint", "").equals(Build.NITROGEN_FINGERPRINT)){
             return false;
         }
         mContext.getSharedPreferences("systemui_theming", 0).edit().putString(
-                "build_fingerprint", Build.AOSIP_FINGERPRINT).commit();
+                "build_fingerprint", Build.NITROGEN_FINGERPRINT).commit();
         return true;
     }
 

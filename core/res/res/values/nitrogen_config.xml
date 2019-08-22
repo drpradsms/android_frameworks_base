@@ -97,8 +97,6 @@
     <string name="config_rat_3g" translatable="false">3G</string>
     <string name="config_rat_4g" translatable="false">4G</string>
 
-    <!-- True if the notification's should dynamically tint the app icon and text -->
-    <bool name="config_allowNotificationIconTextTinting">true</bool>
 
 
     <!-- Whether the device has outdated qti-telephony-common.jar -->
@@ -114,4 +112,7 @@
     <!-- Whether device needs to wait for Qualcomm MPCTL service to start
          before setting power profiles on boot. -->
     <bool name="config_waitForMpctlOnBoot">false</bool>
+
+    <!-- Whether the device supports Smart Pixels -->
+    <bool name="config_enableSmartPixels">false</bool>
 </resources>

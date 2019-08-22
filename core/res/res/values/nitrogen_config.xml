@@ -116,9 +116,6 @@
     <!-- signification move threshold - if stays below will trigger action -->
     <integer name="nav_gesture_move_threshold">4</integer>
 
-    <!-- True if the notifications should tint the app name with the dynamic or the accent color -->
-    <bool name="config_allowNotificationAppNameTextTinting">false</bool>
-
     <!-- Whether device needs to wait for Qualcomm MPCTL service to start
          before setting power profiles on boot. -->
     <bool name="config_waitForMpctlOnBoot">false</bool>

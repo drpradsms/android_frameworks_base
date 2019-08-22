@@ -4768,6 +4768,7 @@ public final class Settings {
         public static final String SCREENSHOT_SOUND = "screenshot_sound";
 
         /** @hide
+        */
         private static final Validator SCREENSHOT_SOUND_VALIDATOR =
                 BOOLEAN_VALIDATOR;
 

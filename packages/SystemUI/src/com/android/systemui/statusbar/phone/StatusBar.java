@@ -4965,6 +4965,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             setLockscreenDoubleTapToSleep();
             setStatusDoubleTapToSleep();
             updateDarkThemeStyle();
+            updateCutoutOverlay();
         }
     }
 
